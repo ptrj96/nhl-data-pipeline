@@ -1,7 +1,7 @@
 {
-  "name": "sportradar_take_home",
+  "name": "nhl-data-pipeline",
   "version": "1.0.0",
-  "description": "take home assignment for sportradar",
+  "description": "an example data pipeline for the NHL",
   "main": "dist/app.js",
   "scripts": {
     "start": "tsc && node dist/app.js",
