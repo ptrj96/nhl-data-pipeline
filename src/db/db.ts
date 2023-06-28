@@ -11,8 +11,8 @@ export class DBClient {
     }
 
     async initializeDb() {
-        await Game.sync()
-        await PlayerGameData.sync()
+        await sequelize.drop()
+        await sequelize.sync()
     }
 
     async connect() {
@@ -27,13 +27,13 @@ export class DBClient {
         await game.save()
     }
 
-    async getLiveGames(gamePk: number): Promise<Game[]> {
+    async getLiveGames(): Promise<Game[]> {
         return Game.findAll({
             where: { isLive: true }
         })
     }
 
-    async getGame(gamePk: number) {
+    async getGame(gamePk: string) {
         return Game.findOne({
             where: {
                 gamePk: gamePk
