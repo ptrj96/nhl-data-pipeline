@@ -5,10 +5,10 @@ import { DBClient } from './db/db.js';
 import { findGame, loadGame } from './game.js';
 const app = express();
 const port = 3000;
-const monitor = new GameMonitor();
 
 const db = new DBClient();
 db.initializeDb();
+const monitor = new GameMonitor(db);
 
 export class ExpressError extends Error {
   status?: number;
