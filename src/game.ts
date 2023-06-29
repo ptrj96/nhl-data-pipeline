@@ -1,5 +1,6 @@
 import axios from "axios";
 import { DBClient, Game, PlayerGameData } from "./db/db";
+import { ExpressError } from "./app";
 
 type PlayerData = {
     person: {
@@ -114,45 +115,60 @@ export async function loadGame(gamePk: string, db: DBClient) {
         isLive: false
     })
 
-    await db.addGame(dbGame);
+    try {
+        await db.addGame(dbGame);
+    } catch (error) {
+        console.error(error);
+        let e = new ExpressError(`error loading game: ${error}`);
+        e.status = 400;
+        throw e
+    }
 
-    gameData.awayPlayers.forEach(async player => {
-        let assists;
-        let goals;
-        let hits;
-        let points;
-        let penaltyMinutes;
-        if (player.stats.skaterStats !== undefined) {
-            assists = player.stats.skaterStats.assists;
-            goals = player.stats.skaterStats.goals;
-            hits = player.stats.skaterStats.hits;
-            points = assists + goals;
-            penaltyMinutes = player.stats.skaterStats.penaltyMinutes;
-        } else {
-            assists = 0;
-            goals = 0;
-            hits = 0;
-            points = assists + goals;
-            penaltyMinutes = 0;
-        }
-        const dbPlayer = PlayerGameData.build({
-            playerId: player.person.id,
-            playerName: player.person.fullName,
-            teamId: player.person.currentTeam.id,
-            teamName: player.person.currentTeam.name,
-            playerAge: player.person.currentAge,
-            playerPosition: player.position.name,
-            assists: assists,
-            goals: goals,
-            hits: hits,
-            points: points,
-            penaltyMinutes: penaltyMinutes,
-            opponentTeam: gameData.homeTeamName,
-            gameGamePk: gameData.gamePk
-        })
-
-        await db.addPlayerGameData(dbPlayer);
-    })
+    try {
+        gameData.awayPlayers.forEach(async player => {
+            let assists;
+            let goals;
+            let hits;
+            let points;
+            let penaltyMinutes;
+            if (player.stats.skaterStats !== undefined) {
+                assists = player.stats.skaterStats.assists;
+                goals = player.stats.skaterStats.goals;
+                hits = player.stats.skaterStats.hits;
+                points = assists + goals;
+                penaltyMinutes = player.stats.skaterStats.penaltyMinutes;
+            } else {
+                assists = 0;
+                goals = 0;
+                hits = 0;
+                points = assists + goals;
+                penaltyMinutes = 0;
+            }
+            const dbPlayer = PlayerGameData.build({
+                playerId: player.person.id,
+                playerName: player.person.fullName,
+                teamId: player.person.currentTeam.id,
+                teamName: player.person.currentTeam.name,
+                playerAge: player.person.currentAge,
+                playerPosition: player.position.name,
+                assists: assists,
+                goals: goals,
+                hits: hits,
+                points: points,
+                penaltyMinutes: penaltyMinutes,
+                opponentTeam: gameData.homeTeamName,
+                gameGamePk: gameData.gamePk
+            })
+    
+            await db.addOrUpdatePlayerGameData(dbPlayer);
+        });
+    } catch (error) {
+        console.error(error);
+        let e = new ExpressError(`error adding player data: ${error}`);
+        e.status = 400;
+        throw e
+    }
+    
 
     return gameData
 }

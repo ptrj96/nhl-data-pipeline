@@ -49,8 +49,19 @@ export class DBClient {
         )
     }
 
-    async addPlayerGameData(playerGameData: PlayerGameData) {
-        await playerGameData.save()
+    async addOrUpdatePlayerGameData(playerGameData: PlayerGameData) {
+        await PlayerGameData.findOne({
+            where: {
+                gameGamePk: playerGameData.gameGamePk, 
+                playerId: playerGameData.playerId}
+            })
+            .then(function(obj) {
+                if(obj) {
+                    obj.update(playerGameData);
+                } else {
+                    playerGameData.save();
+                }
+            })
     }
 }
 
@@ -72,7 +83,22 @@ Game.init(
 );
 
 
-export class PlayerGameData extends Model {}
+export class PlayerGameData extends Model {
+    declare id: number;
+    declare playerId: number;
+    declare playerName: string;
+    declare teamId: string;
+    declare teamName: string;
+    declare playerAge: number;
+    declare playerPosition: string;
+    declare assists: number;
+    declare goals: number;
+    declare hits: number;
+    declare points: number;
+    declare penaltyMinutes: number;
+    declare opponentTeam: string;
+    declare gameGamePk: string;
+}
 PlayerGameData.init(
     {
         id: {
@@ -81,7 +107,7 @@ PlayerGameData.init(
             autoIncrement: true
         },
         playerId: {
-            type: DataTypes.STRING
+            type: DataTypes.INTEGER
         },
         playerName: {
             type: DataTypes.STRING
