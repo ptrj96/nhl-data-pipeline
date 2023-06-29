@@ -82,13 +82,14 @@ export class GameMonitor {
         for (const game of todaysGames) {
             const hasGame = this.liveGames.get(game.gamePk) !== undefined;
             if (game.status.abstractGameState === 'Final' && hasGame) {
-                this.liveGames.get(game.gamePk).finish();
+                await this.liveGames.get(game.gamePk).finish();
                 this.liveGames.delete(game.gamePk);
             }
             if (game.status.abstractGameState === 'live' && !hasGame) {
-                this.liveGames.set(game.gamePk, new LiveUpdater(this.db, game.gamePk));
+                this.liveGames.set(game.gamePk, new LiveUpdater(this.db, game));
+                this.liveGames.get(game.gamePk).addGame();
             }
-            this.liveGames.get(game.gamePk).update(game);
+            this.liveGames.get(game.gamePk).update();
         }
     }
 }

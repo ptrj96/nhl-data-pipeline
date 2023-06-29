@@ -22,7 +22,7 @@ const errorHandler = (error: ExpressError, req: Request, res: Response, next: Ne
 
 app.get('/game/:gameId/load', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.json(await loadGame(req.params.gameId, db));
+    res.json(await loadGame(Number(req.params.gameId), db));
   } catch (error) {
     next(error)
   }

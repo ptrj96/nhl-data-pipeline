@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DBClient, Game, PlayerGameData } from "./db/db";
+import { DBClient, DBGame, PlayerGameData } from "./db/db";
 import { ExpressError } from "./app";
 
 type PlayerData = {
@@ -87,8 +87,8 @@ type PlayerData = {
     }
 }
 
-type GameData = {
-    gamePk: string;
+export type GameData = {
+    gamePk: number;
     awayTeamName: string;
     awayTeamId: string;
     awayPlayers: PlayerData[];
@@ -97,20 +97,9 @@ type GameData = {
     homePlayers: PlayerData[];
 }
 
-export async function loadGame(gamePk: string, db: DBClient) {
-    const response = await axios.get(`https://statsapi.web.nhl.com/api/v1/game/${gamePk}/boxscore`);
-    const data = response.data;
-    const gameData: GameData = {
-        gamePk: gamePk,
-        awayTeamName: data.teams.away.team.name,
-        awayTeamId: data.teams.away.team.id,
-        awayPlayers: Array.from(Object.values(data.teams.away.players)),
-        homeTeamName: data.teams.home.team.name,
-        homeTeamId: data.teams.home.team.id,
-        homePlayers:Array.from(Object.values(data.teams.home.players)),
-    }
-
-    const dbGame = Game.build({
+export async function loadGame(gamePk: number, db: DBClient) {
+    const gameData = await getGameData(gamePk);
+    const dbGame = DBGame.build({
         gamePk: gameData.gamePk,
         isLive: false
     })
@@ -125,43 +114,7 @@ export async function loadGame(gamePk: string, db: DBClient) {
     }
 
     try {
-        gameData.awayPlayers.forEach(async player => {
-            let assists;
-            let goals;
-            let hits;
-            let points;
-            let penaltyMinutes;
-            if (player.stats.skaterStats !== undefined) {
-                assists = player.stats.skaterStats.assists;
-                goals = player.stats.skaterStats.goals;
-                hits = player.stats.skaterStats.hits;
-                points = assists + goals;
-                penaltyMinutes = player.stats.skaterStats.penaltyMinutes;
-            } else {
-                assists = 0;
-                goals = 0;
-                hits = 0;
-                points = assists + goals;
-                penaltyMinutes = 0;
-            }
-            const dbPlayer = PlayerGameData.build({
-                playerId: player.person.id,
-                playerName: player.person.fullName,
-                teamId: player.person.currentTeam.id,
-                teamName: player.person.currentTeam.name,
-                playerAge: player.person.currentAge,
-                playerPosition: player.position.name,
-                assists: assists,
-                goals: goals,
-                hits: hits,
-                points: points,
-                penaltyMinutes: penaltyMinutes,
-                opponentTeam: gameData.homeTeamName,
-                gameGamePk: gameData.gamePk
-            })
-    
-            await db.addOrUpdatePlayerGameData(dbPlayer);
-        });
+        await addOrUpdatePlayer(db, gameData);
     } catch (error) {
         console.error(error);
         let e = new ExpressError(`error adding player data: ${error}`);
@@ -173,6 +126,61 @@ export async function loadGame(gamePk: string, db: DBClient) {
     return gameData
 }
 
-export async function findGame(gamePk: string, db: DBClient): Promise<Game> {
+export async function getGameData(gamePk: number): Promise<GameData> {
+    const response = await axios.get(`https://statsapi.web.nhl.com/api/v1/game/${this.game.gamePk}/boxscore`);
+    const data = response.data;
+    const gameData: GameData = {
+        gamePk: this.game.gamePk,
+        awayTeamName: data.teams.away.team.name,
+        awayTeamId: data.teams.away.team.id,
+        awayPlayers: Array.from(Object.values(data.teams.away.players)),
+        homeTeamName: data.teams.home.team.name,
+        homeTeamId: data.teams.home.team.id,
+        homePlayers:Array.from(Object.values(data.teams.home.players)),
+    }
+    return gameData
+}
+
+export async function addOrUpdatePlayer(db: DBClient, gameData: GameData) {
+    gameData.awayPlayers.forEach(async player => {
+        let assists;
+        let goals;
+        let hits;
+        let points;
+        let penaltyMinutes;
+        if (player.stats.skaterStats !== undefined) {
+            assists = player.stats.skaterStats.assists;
+            goals = player.stats.skaterStats.goals;
+            hits = player.stats.skaterStats.hits;
+            points = assists + goals;
+            penaltyMinutes = player.stats.skaterStats.penaltyMinutes;
+        } else {
+            assists = 0;
+            goals = 0;
+            hits = 0;
+            points = assists + goals;
+            penaltyMinutes = 0;
+        }
+        const dbPlayer = PlayerGameData.build({
+            playerId: player.person.id,
+            playerName: player.person.fullName,
+            teamId: player.person.currentTeam.id,
+            teamName: player.person.currentTeam.name,
+            playerAge: player.person.currentAge,
+            playerPosition: player.position.name,
+            assists: assists,
+            goals: goals,
+            hits: hits,
+            points: points,
+            penaltyMinutes: penaltyMinutes,
+            opponentTeam: gameData.homeTeamName,
+            gameGamePk: gameData.gamePk
+        })
+
+        await db.addOrUpdatePlayerGameData(dbPlayer);
+    });
+}
+
+export async function findGame(gamePk: string, db: DBClient): Promise<DBGame> {
     return await db.getGame(gamePk);
 }

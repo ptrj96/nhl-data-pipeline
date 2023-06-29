@@ -23,18 +23,18 @@ export class DBClient {
           }
     }
     
-    async addGame(game: Game) {
+    async addGame(game: DBGame) {
         await game.save()
     }
 
-    async getLiveGames(): Promise<Game[]> {
-        return Game.findAll({
+    async getLiveGames(): Promise<DBGame[]> {
+        return DBGame.findAll({
             where: { isLive: true }
         })
     }
 
     async getGame(gamePk: string) {
-        return Game.findOne({
+        return DBGame.findOne({
             where: {
                 gamePk: gamePk
             },
@@ -43,7 +43,7 @@ export class DBClient {
     }
 
     async removeLiveGame(gamePk: number) {
-        Game.update(
+        DBGame.update(
             { isLive: false },
             { where: {gamePk: gamePk } }
         )
@@ -65,11 +65,11 @@ export class DBClient {
     }
 }
 
-export class Game extends Model {
+export class DBGame extends Model {
     declare gamePk: number;
     declare isLive: boolean;
 }
-Game.init(
+DBGame.init(
     {
         gamePk: {
             type: DataTypes.INTEGER,
@@ -146,5 +146,5 @@ PlayerGameData.init(
     {sequelize, modelName: 'player_game_data'}
 );
 
-Game.hasMany(PlayerGameData);
-PlayerGameData.belongsTo(Game);
+DBGame.hasMany(PlayerGameData);
+PlayerGameData.belongsTo(DBGame);
