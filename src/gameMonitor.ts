@@ -66,14 +66,14 @@ export class GameMonitor {
         console.log('started monitoring');
         // eslint-disable-next-line no-constant-condition
         while(true) {
-            await this.update()
+            await this.update();
             // wait a minute before updating again
             await sleep(60000);
         }
     }
 
     async update() {
-        console.log('updating live games')
+        console.log('updating live games');
         const scheduleRes = await axios.get('https://statsapi.web.nhl.com/api/v1/schedule');
         const todaysGames: Game[] = scheduleRes.data.dates[0]?.games;
         if (todaysGames === undefined) {

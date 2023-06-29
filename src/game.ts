@@ -102,7 +102,7 @@ export async function loadGame(gamePk: number, db: DBClient) {
     const dbGame = DBGame.build({
         gamePk: gameData.gamePk,
         isLive: false
-    })
+    });
 
     try {
         await db.addGame(dbGame);
@@ -110,7 +110,7 @@ export async function loadGame(gamePk: number, db: DBClient) {
         console.error(error);
         const e = new ExpressError(`error loading game: ${error}`);
         e.status = 400;
-        throw e
+        throw e;
     }
 
     try {
@@ -119,11 +119,11 @@ export async function loadGame(gamePk: number, db: DBClient) {
         console.error(error);
         const e = new ExpressError(`error adding player data: ${error}`);
         e.status = 400;
-        throw e
+        throw e;
     }
     
 
-    return gameData
+    return gameData;
 }
 
 export async function getGameData(gamePk: number): Promise<GameData> {
@@ -137,8 +137,8 @@ export async function getGameData(gamePk: number): Promise<GameData> {
         homeTeamName: data.teams.home.team.name,
         homeTeamId: data.teams.home.team.id,
         homePlayers:Array.from(Object.values(data.teams.home.players)),
-    }
-    return gameData
+    };
+    return gameData;
 }
 
 export async function addOrUpdatePlayer(db: DBClient, gameData: GameData) {
@@ -175,7 +175,7 @@ export async function addOrUpdatePlayer(db: DBClient, gameData: GameData) {
             penaltyMinutes: penaltyMinutes,
             opponentTeam: gameData.homeTeamName,
             gameGamePk: gameData.gamePk
-        })
+        });
 
         await db.addOrUpdatePlayerGameData(dbPlayer);
     });

@@ -18,21 +18,21 @@ const errorHandler = (error: ExpressError, req: Request, res: Response) => {
   console.error(error.message);
   const status = error.status || 400;
   res.status(status).send(error.message);
-}
+};
 
 app.get('/game/:gameId/load', async (req: Request, res: Response, next: NextFunction) => {
   try {
     res.json(await loadGame(Number(req.params.gameId), db));
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 
 app.get('/game/:gameId', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.json(await findGame(req.params.gameId, db))
+    res.json(await findGame(req.params.gameId, db));
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 

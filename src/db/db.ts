@@ -11,8 +11,8 @@ export class DBClient {
     }
 
     async initializeDb() {
-        await sequelize.drop()
-        await sequelize.sync()
+        await sequelize.drop();
+        await sequelize.sync();
     }
 
     async connect() {
@@ -24,13 +24,13 @@ export class DBClient {
     }
     
     async addGame(game: DBGame) {
-        await game.save()
+        await game.save();
     }
 
     async getLiveGames(): Promise<DBGame[]> {
         return DBGame.findAll({
             where: { isLive: true }
-        })
+        });
     }
 
     async getGame(gamePk: string) {
@@ -39,14 +39,14 @@ export class DBClient {
                 gamePk: gamePk
             },
             include: PlayerGameData
-        })
+        });
     }
 
     async removeLiveGame(gamePk: number) {
         DBGame.update(
             { isLive: false },
             { where: {gamePk: gamePk } }
-        )
+        );
     }
 
     async addOrUpdatePlayerGameData(playerGameData: PlayerGameData) {
@@ -61,7 +61,7 @@ export class DBClient {
                 } else {
                     playerGameData.save();
                 }
-            })
+            });
     }
 }
 
