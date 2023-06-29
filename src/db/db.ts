@@ -11,7 +11,7 @@ export class DBClient {
     }
 
     async initializeDb() {
-        await sequelize.drop();
+        // await sequelize.drop();
         await sequelize.sync();
     }
 

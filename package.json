@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsc && node dist/app.js",
     "lint": "eslint . --ext .ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "PJ Rape",
   "license": "ISC",
@@ -18,9 +18,11 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
+    "@types/jest": "^29.5.2",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.43.0",
+    "jest": "^29.5.0",
     "typescript": "^5.1.3"
   }
 }
