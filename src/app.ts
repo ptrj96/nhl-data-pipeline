@@ -14,7 +14,7 @@ export class ExpressError extends Error {
   status?: number;
 }
 
-const errorHandler = (error: ExpressError, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (error: ExpressError, req: Request, res: Response) => {
   console.error(error.message);
   const status = error.status || 400;
   res.status(status).send(error.message);

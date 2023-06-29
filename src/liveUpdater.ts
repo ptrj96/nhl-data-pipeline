@@ -1,7 +1,6 @@
-import axios from 'axios';
-import { DBClient, DBGame, PlayerGameData } from './db/db.js';
+import { DBClient, DBGame } from './db/db.js';
 import { Game } from './gameMonitor.js';
-import { GameData, addOrUpdatePlayer, getGameData } from './game.js';
+import { addOrUpdatePlayer, getGameData } from './game.js';
 
 export class LiveUpdater {
     db: DBClient;

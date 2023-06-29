@@ -64,6 +64,7 @@ export class GameMonitor {
 
     async start() {
         console.log('started monitoring');
+        // eslint-disable-next-line no-constant-condition
         while(true) {
             await this.update()
             // wait a minute before updating again

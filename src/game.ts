@@ -108,7 +108,7 @@ export async function loadGame(gamePk: number, db: DBClient) {
         await db.addGame(dbGame);
     } catch (error) {
         console.error(error);
-        let e = new ExpressError(`error loading game: ${error}`);
+        const e = new ExpressError(`error loading game: ${error}`);
         e.status = 400;
         throw e
     }
@@ -117,7 +117,7 @@ export async function loadGame(gamePk: number, db: DBClient) {
         await addOrUpdatePlayer(db, gameData);
     } catch (error) {
         console.error(error);
-        let e = new ExpressError(`error adding player data: ${error}`);
+        const e = new ExpressError(`error adding player data: ${error}`);
         e.status = 400;
         throw e
     }
@@ -127,10 +127,10 @@ export async function loadGame(gamePk: number, db: DBClient) {
 }
 
 export async function getGameData(gamePk: number): Promise<GameData> {
-    const response = await axios.get(`https://statsapi.web.nhl.com/api/v1/game/${this.game.gamePk}/boxscore`);
+    const response = await axios.get(`https://statsapi.web.nhl.com/api/v1/game/${gamePk}/boxscore`);
     const data = response.data;
     const gameData: GameData = {
-        gamePk: this.game.gamePk,
+        gamePk: gamePk,
         awayTeamName: data.teams.away.team.name,
         awayTeamId: data.teams.away.team.id,
         awayPlayers: Array.from(Object.values(data.teams.away.players)),
