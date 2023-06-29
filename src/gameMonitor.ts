@@ -82,16 +82,17 @@ export class GameMonitor {
 
         for (const game of todaysGames) {
             const hasGame = this.liveGames.get(game.gamePk) !== undefined;
-            if (game.status.abstractGameState === 'Final' && hasGame) {
+            if (game.status.abstractGameState.toLocaleLowerCase() === 'final' && hasGame) {
                 await this.liveGames.get(game.gamePk).finish();
                 this.liveGames.delete(game.gamePk);
-                continue;
             }
-            if (game.status.abstractGameState === 'live' && !hasGame) {
-                this.liveGames.set(game.gamePk, new LiveUpdater(this.db, game));
-                this.liveGames.get(game.gamePk).addGame();
+            else if (game.status.abstractGameState.toLocaleLowerCase() === 'live') {
+                if (!hasGame) {
+                    this.liveGames.set(game.gamePk, new LiveUpdater(this.db, game));
+                    this.liveGames.get(game.gamePk).addGame();
+                }
+                this.liveGames.get(game.gamePk).update();
             }
-            this.liveGames.get(game.gamePk).update();
         }
     }
 }
