@@ -85,6 +85,7 @@ export class GameMonitor {
             if (game.status.abstractGameState === 'Final' && hasGame) {
                 await this.liveGames.get(game.gamePk).finish();
                 this.liveGames.delete(game.gamePk);
+                continue;
             }
             if (game.status.abstractGameState === 'live' && !hasGame) {
                 this.liveGames.set(game.gamePk, new LiveUpdater(this.db, game));
