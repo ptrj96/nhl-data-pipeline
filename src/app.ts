@@ -30,7 +30,7 @@ app.get('/game/:gameId/load', async (req: Request, res: Response, next: NextFunc
 
 app.get('/game/:gameId', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.json(await findGame(req.params.gameId, db));
+    res.json(await findGame(Number(req.params.gameId), db));
   } catch (error) {
     next(error);
   }

@@ -181,6 +181,6 @@ export async function addOrUpdatePlayer(db: DBClient, gameData: GameData) {
     });
 }
 
-export async function findGame(gamePk: string, db: DBClient): Promise<DBGame> {
+export async function findGame(gamePk: number, db: DBClient): Promise<DBGame> {
     return await db.getGame(gamePk);
 }

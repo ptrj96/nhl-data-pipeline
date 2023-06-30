@@ -11,9 +11,18 @@ export class DBClient {
     }
 
     async initializeDb() {
-        // await sequelize.drop();
         await sequelize.sync();
     }
+
+    async initializeDbWithDrop() {
+        await sequelize.drop();
+        await sequelize.sync();
+    }
+
+    async drop() {
+        await sequelize.drop();
+    }
+    
 
     async connect() {
         try {
@@ -21,6 +30,14 @@ export class DBClient {
           } catch (error) {
             console.error('Unable to connect to the database:', error);
           }
+    }
+
+    async close() {
+        try {
+            await this.client.close();
+        } catch (error) {
+            console.error('Unable to close conection', error);
+        }
     }
     
     async addGame(game: DBGame) {
@@ -33,7 +50,7 @@ export class DBClient {
         });
     }
 
-    async getGame(gamePk: string) {
+    async getGame(gamePk: number): Promise<DBGame> {
         return DBGame.findOne({
             where: {
                 gamePk: gamePk
@@ -62,6 +79,10 @@ export class DBClient {
                     playerGameData.save();
                 }
             });
+    }
+
+    async getPlayers() {
+        return PlayerGameData.findAll();
     }
 }
 
