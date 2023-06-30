@@ -9,8 +9,9 @@ This app uses a postgres db with an included `docker-compose.yaml` for ease of r
 ### Running the App
 
 1. install necessary packages with `npm install`
-2. start db with `docker compose up -d` if you want it in the background or omit the `-d` if you want it to run in the foreground.
-3. run `npm start` and the app will be running at http://localhost:3000
+2. copy the .env template with `cp .env.template .env` and fill out the DB_PASSWORD with a password of your choosing and you will need to set the environment of your shell with that file
+3. start db with `docker compose up -d` if you want it in the background or omit the `-d` if you want it to run in the foreground.
+4. run `npm start` and the app will be running at http://localhost:3000
 
 ### Other scripts
 

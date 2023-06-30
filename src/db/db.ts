@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
-export const sequelize = new Sequelize('postgres', 'user', 'temp', {host: 'localhost', dialect: 'postgres'});
+export const sequelize = new Sequelize('postgres', 'user', process.env.DB_PASSWORD, {host: 'localhost', dialect: 'postgres'});
 
 
 export class DBClient {
