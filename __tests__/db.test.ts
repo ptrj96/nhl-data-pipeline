@@ -11,7 +11,7 @@ describe('DBClient', () => {
 
     afterAll(async () => {
         await db.close();
-    })
+    });
 
     describe('addGame', () => {
         test('success', async () => {
@@ -19,10 +19,10 @@ describe('DBClient', () => {
             const testGame = DBGame.build({
                 gamePk: 123,
                 isLive: false
-            })
+            });
             await db.addGame(testGame);
     
-            const testGetGame = await db.getGame(123)
+            const testGetGame = await db.getGame(123);
             expect(testGetGame.gamePk).toBe(123);
         });
 
@@ -31,14 +31,14 @@ describe('DBClient', () => {
             const testGame1 = DBGame.build({
                 gamePk: 123,
                 isLive: false
-            })
+            });
             const testGame2 = DBGame.build({
                 gamePk: 123,
                 isLive: false
-            })
+            });
             await db.addGame(testGame1);
-            await expect(async () => { await db.addGame(testGame2) }).rejects.toThrow();
-        })
+            await expect(async () => { await db.addGame(testGame2); }).rejects.toThrow();
+        });
     });
 
     describe('getLiveGames', () => {
@@ -47,21 +47,20 @@ describe('DBClient', () => {
             const testGame1 = DBGame.build({
                 gamePk: 1,
                 isLive: true
-            })
+            });
             const testGame2 = DBGame.build({
                 gamePk: 2,
                 isLive: false
-            })
+            });
             const testGame3 = DBGame.build({
                 gamePk: 3,
                 isLive: true
-            })
+            });
             await db.addGame(testGame1);
             await db.addGame(testGame2);
             await db.addGame(testGame3);
 
             const testLiveGames = await db.getLiveGames();
-            console.log(testLiveGames.length)
             expect(testLiveGames.length).toBe(2);
         });
 
@@ -70,22 +69,22 @@ describe('DBClient', () => {
             const testGame1 = DBGame.build({
                 gamePk: 1,
                 isLive: false
-            })
+            });
             const testGame2 = DBGame.build({
                 gamePk: 2,
                 isLive: false
-            })
+            });
             const testGame3 = DBGame.build({
                 gamePk: 3,
                 isLive: false
-            })
+            });
             await db.addGame(testGame1);
             await db.addGame(testGame2);
             await db.addGame(testGame3);
 
             const testLiveGames = await db.getLiveGames();
             expect(testLiveGames.length).toBe(0);
-        })
+        });
     });
 
     describe('getGame', () => {
@@ -94,7 +93,7 @@ describe('DBClient', () => {
             const testGame1 = DBGame.build({
                 gamePk: 1,
                 isLive: false
-            })
+            });
             await db.addGame(testGame1);
             const testResult = await db.getGame(1);
             expect(testResult.gamePk).toBe(1);
