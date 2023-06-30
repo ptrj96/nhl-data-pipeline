@@ -15,4 +15,5 @@ This app uses a postgres db with an included `docker-compose.yaml` for ease of r
 ### Other scripts
 
 This app includes some unit tests written with jest. They can be run by running `npm test`
+
 Linting is also set up with `npm run lint`
