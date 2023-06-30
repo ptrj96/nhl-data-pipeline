@@ -18,3 +18,12 @@ This app uses a postgres db with an included `docker-compose.yaml` for ease of r
 This app includes some unit tests written with jest. They can be run by running `npm test`
 
 Linting is also set up with `npm run lint`
+
+
+## Notes
+
+I ended up having less time than I had hoped to get this done with a busy work week and my in-laws staying with me. Some things I would have wanted to do if I had more time would include
+- more extensive unit tests
+- a way to pass a filter or range to load multiple games at a time
+- a way to perform a simple search on player or team
+- breaking some of the modules up, for example I wanted to put the Models for the ORM in seperate files but ran into some kind of cyclical dependency issue that I ended up not having time to fix.
